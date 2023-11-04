@@ -1,0 +1,29 @@
+server:
+  port: 8083
+  servlet:
+    context-path: /api/user
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/userdb?createDatabaseIfNotExist=true
+    username: root
+    password: ${SECRETS_DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+  app:
+    jwtSecret: ${SECRETS_JWT_SECRET}
+    jwtExpirationMs: 3600000
+
+logging:
+  file: userServiceLogs.logs
+  path: /var/log
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+  packagesToScan: com.example.userservice.controller
+  pathsToMatch: /auth/**, /view_users, /view/**, /update/**, /action/**
