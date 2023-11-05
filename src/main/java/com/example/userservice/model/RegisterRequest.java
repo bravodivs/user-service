@@ -22,8 +22,6 @@ public class RegisterRequest {
     private String password;
 
     @NotNull(message = "User address may not be empty")
-//    @NotBlank(message = "User address may not be empty")
-//    private String address;
     private Address address;
 
     @NotNull(message = "Email may not be null")
@@ -31,11 +29,11 @@ public class RegisterRequest {
     @Email
     private String email;
 
-    /*@NotNull(message = "User must have at least one role")
+/*
+    @NotNull(message = "User must have at least one role")
     @NotEmpty(message = "User must have at least one role")
-    */
-//    private List<String> role;
-
+    private List<String> role;
+*/
 
     @NumberFormat(style = NumberFormat.Style.NUMBER, pattern = "#####-#####")
     @Size(min = 10, max = 10)

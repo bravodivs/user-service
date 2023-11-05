@@ -1,6 +1,6 @@
 package com.example.userservice.model;
 
-import com.example.userservice.Convertor.StringListConvertor;
+import com.example.userservice.convertor.StringListConvertor;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -35,7 +35,6 @@ public class User {
     @Column(unique = true, nullable = false)
     private String email;
 
-    /*TODO: try if this would work with List<UserRole> also*/
     @Convert(converter = StringListConvertor.class)
     @Column(nullable = false)
     private List<String> role;
@@ -109,14 +108,6 @@ public class User {
     public void setMobileNumber(String mobileNumber) {
         this.mobileNumber = mobileNumber;
     }
-
-   /* public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }*/
 
     public String getLastUpdatedBy() {
         return lastUpdatedBy;

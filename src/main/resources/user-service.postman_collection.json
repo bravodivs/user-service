@@ -1,0 +1,385 @@
+{
+	"info": {
+		"_postman_id": "4a6aaa14-e419-4d44-b4a5-fd106e712562",
+		"name": "user-service",
+		"description": "User service APIs facilitating registering, login, logout, delete, enable, disable and viewing users.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30946069"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\":\"dev\",\r\n    \"password\":\"Password@1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8083/api/user/auth/login",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"api",
+						"user",
+						"auth",
+						"login"
+					]
+				},
+				"description": "Logs in a user with username and password."
+			},
+			"response": []
+		},
+		{
+			"name": "Register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\":\"dev\",\r\n    \"password\":\"Password@1\",\r\n    \"email\":\"dev@gmail.com\",\r\n    \"mobileNumber\":\"9898989891\",\r\n    \"address\":{\r\n        \"addressLine1\":\"OMR\",\r\n        \"addressLine2\":\"Kandanchavadi\",\r\n        \"city\":\"chennai\",\r\n        \"pincode\":600096,\r\n        \"state\":\"Tamil nadu\",\r\n        \"country\":\"India\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8083/api/user/auth/register",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"api",
+						"user",
+						"auth",
+						"register"
+					]
+				},
+				"description": "Registers a customer with the following required fields:\n\nusername\n\npassword <- must be atleast 8 and atmost 15 characters with atleast 1 caps, 1 small, 1 special and 1 numerical character\n\nemail <- should be valid email\n\nmobile number <- must be a 10 digit number\n\naddress -> addressLine1, addressLine2, ciy, state, pincode, country"
+			},
+			"response": []
+		},
+		{
+			"name": "Register Admin",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\":\"dev\",\r\n    \"password\":\"Password@1\",\r\n    \"email\":\"dev@gmail.com\",\r\n    \"mobileNumber\":\"9898989891\",\r\n    \"address\":{\r\n        \"addressLine1\":\"OMR\",\r\n        \"addressLine2\":\"Kandanchavadi\",\r\n        \"city\":\"chennai\",\r\n        \"pincode\":600096,\r\n        \"state\":\"Tamil nadu\",\r\n        \"country\":\"India\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8083/api/user/auth/register_admin",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"api",
+						"user",
+						"auth",
+						"register_admin"
+					]
+				},
+				"description": "Registers an admin with the following required fields:\n\nusername\n\npassword <- must be atleast 8 and atmost 15 characters with atleast 1 caps, 1 small, 1 special and 1 numerical character\n\nemail <- should be valid email\n\nmobile number <- must be a 10 digit number\n\naddress -> addressLine1, addressLine2, ciy, state, pincode, country"
+			},
+			"response": []
+		},
+		{
+			"name": "View user",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8083/api/user/view/dev",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"api",
+						"user",
+						"view",
+						"dev"
+					]
+				},
+				"description": "Views a user profile.\n\nAuthorization needed. Admin can view any profile while a user can view only his profile."
+			},
+			"response": []
+		},
+		{
+			"name": "Update user",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"address\":{\r\n        \"addressLine1\":\"MGR salai, chennai\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8083/api/user/update/dev",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"api",
+						"user",
+						"update",
+						"dev"
+					]
+				},
+				"description": "Authorization required.\n\nAdmin can update any profile while a user can update only his profile."
+			},
+			"response": []
+		},
+		{
+			"name": "View users without disabled",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8083/api/user/view_users",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"api",
+						"user",
+						"view_users"
+					]
+				},
+				"description": "Views all users but excludes the disabled users.\n\nAdmin authorization needed."
+			},
+			"response": []
+		},
+		{
+			"name": "View users with disabled",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8083/api/user/view_users?disabled=1",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"api",
+						"user",
+						"view_users"
+					],
+					"query": [
+						{
+							"key": "disabled",
+							"value": "1"
+						}
+					]
+				},
+				"description": "Views all users along with disabled users too.\n\nAdmin authorization needed."
+			},
+			"response": []
+		},
+		{
+			"name": "Disable user",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:8083/api/user/action/disable/dev",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"api",
+						"user",
+						"action",
+						"disable",
+						"dev"
+					]
+				},
+				"description": "Disables a user. Admin access needed."
+			},
+			"response": []
+		},
+		{
+			"name": "Enable user",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:8083/api/user/action/enable/dev",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"api",
+						"user",
+						"action",
+						"enable",
+						"dev"
+					]
+				},
+				"description": "Enables a user. Admin access needed."
+			},
+			"response": []
+		},
+		{
+			"name": "Logout user",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:8083/api/user/logout/dev",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"api",
+						"user",
+						"logout",
+						"dev"
+					]
+				},
+				"description": "Logout a user. A user can only logout its own profile."
+			},
+			"response": []
+		},
+		{
+			"name": "Delete user",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8083/api/user/delete/dev",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"api",
+						"user",
+						"delete",
+						"dev"
+					]
+				},
+				"description": "Deletes a user. Admin access needed."
+			},
+			"response": []
+		}
+	]
+}

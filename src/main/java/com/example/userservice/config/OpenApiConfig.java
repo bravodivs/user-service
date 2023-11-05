@@ -14,8 +14,7 @@ public class OpenApiConfig {
                 .info(new Info()
                         .title("User service micro application")
                         .description("User service application containing user apis")
-                        .version("1.0"))
-                ;
+                        .version("1.0"));
     }
 
 }

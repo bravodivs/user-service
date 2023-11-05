@@ -12,20 +12,15 @@ import org.yaml.snakeyaml.util.EnumUtils;
 import java.util.Collection;
 import java.util.List;
 
-
-/*
- * this class is used to create an object of type UserDetails.
- */
-
 public class UserDetailsImpl implements UserDetails {
     private static final Logger logger = LoggerFactory.getLogger(UserDetailsImpl.class);
+
     private final UserDto userDto;
 
     public UserDetailsImpl(UserDto userDto) {
         this.userDto = userDto;
     }
 
-    /*set the authorities here so that can be authorized in the security config*/
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<? extends GrantedAuthority> authorityList = userDto.getRole().stream()

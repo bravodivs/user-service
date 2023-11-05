@@ -12,6 +12,6 @@ public enum UserRole {
                 }
             }
         }
-        throw new IllegalArgumentException("No enum constant " + UserRole.class.getName() + "." + roleString);
+        throw new IllegalArgumentException("No available role of name - "  + roleString);
     }
 }

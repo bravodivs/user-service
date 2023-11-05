@@ -43,8 +43,6 @@ public class UserDto {
     private String mobileNumber;
 
     @NotNull(message = "User address may not be empty")
-//    @NotBlank(message = "User address may not be empty")
-//    private String address;
     private Address address;
 
     private String lastUpdatedBy;

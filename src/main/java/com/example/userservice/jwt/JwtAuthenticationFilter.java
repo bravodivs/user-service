@@ -1,8 +1,7 @@
-package com.example.userservice.security;
+package com.example.userservice.jwt;
 
 import com.example.userservice.exception.CustomException;
 import com.example.userservice.service.UserDetailsServiceImpl;
-import com.example.userservice.util.JwtUtility;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,7 +26,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private static final Logger eventLogger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
-//    @Autowired
     private final UserDetailsServiceImpl userDetailsServiceImpl;
 
     private final HandlerExceptionResolver handlerExceptionResolver;
@@ -50,11 +48,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         eventLogger.info("Request path received - {}", request.getServletPath());
 
-        /*TODO: exclude checking for allowed urls for presence of bearer token*/
-
         if (request.getServletPath().contains("/auth") ||
                 request.getServletPath().contains("/swagger-ui") ||
-        request.getServletPath().contains("/api-docs") ) {
+                request.getServletPath().contains("/api-docs")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -62,17 +58,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String userName;
+
         try {
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-                /*first pass through custom filters for authentication and authorization then pass to internal filters*/
-//           : why are we not doing this? <- no need for further checking because its unauthorized.,
-//            filterChain.doFilter(request, response);
-
                 eventLogger.error("Bearer token not present in auth header - {}", authHeader);
                 throw new CustomException("Bearer token not present", HttpStatus.UNAUTHORIZED);
             }
 
-            if(Boolean.TRUE.equals(jwtUtility.checkTokenRevoked(authHeader))) {
+            if (Boolean.TRUE.equals(jwtUtility.checkTokenRevoked(authHeader))) {
                 logger.error("user is logged out");
                 throw new CustomException("User logged out. Login again to continue", HttpStatus.UNAUTHORIZED);
             }
@@ -81,22 +74,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             try {
                 userName = jwtUtility.getUsernameFromToken(jwt);
             } catch (CustomException cx) {
-                eventLogger.error("Token expired/wrong token provided. Expiration time: {}", jwtUtility.getExpirationDateFromToken(jwt));
+                eventLogger.error("Token expired/wrong token provided. Expiration time: {}",
+                        jwtUtility.getExpirationDateFromToken(jwt));
                 throw new CustomException(String.format("Token expired/wrong token provided. Expiration time: %s",
                         jwtUtility.getExpirationDateFromToken(jwt)), HttpStatus.UNAUTHORIZED);
             }
             if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails;
-                try {
-                    userDetails = userDetailsServiceImpl.loadUserByUsername(userName);
-                } catch (CustomException cx) {
-                    /*TODO: throw error here */
-//                    response.setStatus(cx.getStatus().value());
-//                    response.getWriter().write(cx.getMessage());
-                    throw new CustomException(cx.getMessage(),cx.getStatus() );
-//                    return;
-                }
-
+                userDetails = userDetailsServiceImpl.loadUserByUsername(userName);
                 if (Boolean.TRUE.equals(jwtUtility.validateToken(jwt, userDetails))) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                             userDetails,
@@ -111,8 +96,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
             filterChain.doFilter(request, response);
-        }
-        catch (CustomException cx){
+        } catch (CustomException cx) {
             handlerExceptionResolver.resolveException(request, response, null, cx);
         }
     }

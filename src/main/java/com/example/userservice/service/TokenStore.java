@@ -21,7 +21,7 @@ public class TokenStore {
     }
 
     public static boolean isTokenRevoked(String token) {
-        logger.info(revokedTokens.toString());
+        logger.info("Revoked tokens for the session: {}",revokedTokens.toString());
         return revokedTokens.contains(token);
     }
 }

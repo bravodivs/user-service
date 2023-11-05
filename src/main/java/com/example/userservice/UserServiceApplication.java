@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @EnableJpaAuditing
 public class UserServiceApplication {
     private static final Logger logger = LoggerFactory.getLogger(UserServiceApplication.class);
+
     @Value("${spring.datasource.url}")
     private String sqlConnectionUrl;
 

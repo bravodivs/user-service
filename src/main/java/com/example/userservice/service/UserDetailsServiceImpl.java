@@ -1,12 +1,9 @@
 package com.example.userservice.service;
 
 import com.example.userservice.exception.CustomException;
-import com.example.userservice.model.*;
+import com.example.userservice.model.User;
 import com.example.userservice.repository.UserRepository;
 import com.example.userservice.util.UserUtils;
-import java.util.Arrays;
-import java.util.Objects;
-
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +30,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             User user = userRepository.findTopByUsername(username);
 
             if (Objects.isNull(user)) {
-                logger.error("User - {} not found", username);
+                logger.error("Principal - {} not found", username);
                 throw new CustomException("Invalid credentials", HttpStatus.UNAUTHORIZED);
             }
 
@@ -39,11 +38,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             return new UserDetailsImpl(UserUtils.userDaoToDto(user));
 
         } catch (CustomException cx) {
-            logger.error(Arrays.toString(cx.getStackTrace()));
+            logger.error(cx.getMessage());
             throw new CustomException(cx.getMessage(), cx.getStatus());
 
         } catch (Exception e) {
-            logger.error("Error while loading user- {}", e.getMessage());
+            logger.error("Error while loading principal- {}", e.getMessage());
             throw new CustomException(e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

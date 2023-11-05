@@ -25,27 +25,27 @@ public class Address {
     private UUID id;
 
     @NotNull
-    @Column
+    @Column(nullable = false)
     private Integer pincode;
 
     @NotNull
     @NotEmpty
-    @Column
+    @Column(nullable = false)
     private String city;
 
     @NotNull
     @NotEmpty
-//    @Column(nullable = false)
-    @Column
+    @Column(nullable = false)
     private String state;
 
     @NotNull
     @NotEmpty
-//    @Column(nullable = false)
-    @Column
+    @Column(nullable = false)
     private String addressLine1;
 
-    @Column
+    @NotNull
+    @NotEmpty
+    @Column(nullable = false)
     private String addressLine2;
 
     @Column(columnDefinition = "varchar(20) default 'INDIA'")

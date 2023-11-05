@@ -1,8 +1,10 @@
-package com.example.userservice.security;
+package com.example.userservice.config;
 
+import com.example.userservice.exception.CustomException;
+import com.example.userservice.jwt.JwtAuthenticationFilter;
+import com.example.userservice.jwt.JwtUtility;
 import com.example.userservice.model.UserRole;
 import com.example.userservice.service.UserDetailsServiceImpl;
-import com.example.userservice.util.JwtUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,6 +45,7 @@ public class SecurityConfig {
             "/swagger-ui/**",
             "/webjars/**"
     };
+
     private static final String[] admin_access_urls = {
             "/view_users",
             "/auth/register_admin",
@@ -50,17 +53,12 @@ public class SecurityConfig {
             "/enable/**",
             "/delete/**"
     };
+    private final UserDetailsService userDetailsService;
+    private final HandlerExceptionResolver handlerExceptionResolver;
     @Autowired
     private JwtUtility jwtUtility;
-
-    @Autowired
-    private UserDetailsService userDetailsService;
-
     @Autowired
     private UserDetailsServiceImpl userDetailsServiceImpl;
-
-    @Autowired
-    private HandlerExceptionResolver handlerExceptionResolver;
 
     public SecurityConfig(UserDetailsService userDetailsService, HandlerExceptionResolver handlerExceptionResolver) {
         this.userDetailsService = userDetailsService;
@@ -82,9 +80,7 @@ public class SecurityConfig {
                         jwtUtility,
                         handlerExceptionResolver), UsernamePasswordAuthenticationFilter.class);
 
-        /*TODO: find a way out for this deprication*/
-        http.exceptionHandling().authenticationEntryPoint(new Http403ForbiddenEntryPoint())
-                .accessDeniedHandler(accessDeniedHandler());
+        http.exceptionHandling(exception->exception.authenticationEntryPoint(new Http403ForbiddenEntryPoint()));
         return http.build();
     }
 
@@ -109,16 +105,14 @@ public class SecurityConfig {
     @Bean
     public AccessDeniedHandler accessDeniedHandler() {
         return (request, response, ex) -> {
-            response.setStatus(HttpStatus.FORBIDDEN.value());
-            response.getWriter().write("Access Denied: You don't have permission to access this resource.");
-            /*TODO: throw error here*/
+            throw new CustomException("Access Denied: You don't have permission to access this resource.",
+                    HttpStatus.FORBIDDEN);
         };
     }
 
     private AntPathRequestMatcher[] getAntPathRequestMatchers(String[] urlList) {
-        AntPathRequestMatcher[] requestMatchers = Arrays.stream(urlList)
+        return Arrays.stream(urlList)
                 .map(AntPathRequestMatcher::new)
                 .toArray(AntPathRequestMatcher[]::new);
-        return requestMatchers;
     }
 }

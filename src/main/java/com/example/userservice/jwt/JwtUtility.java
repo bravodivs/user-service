@@ -1,4 +1,4 @@
-package com.example.userservice.util;
+package com.example.userservice.jwt;
 
 import com.example.userservice.exception.CustomException;
 import com.example.userservice.service.TokenStore;
@@ -16,7 +16,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +28,7 @@ public class JwtUtility {
 
     @Value("${spring.app.jwtExpirationMs}")
     private int tokenExpiration;
+
     @Value("${spring.app.jwtSecret}")
     private String secretKey;
 
@@ -59,7 +59,7 @@ public class JwtUtility {
         try {
             claims = Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token).getBody();
         } catch (Exception e) {
-            logger.error(Arrays.toString(e.getStackTrace()));
+            logger.error(e.getLocalizedMessage());
             throw new CustomException(e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return claims;

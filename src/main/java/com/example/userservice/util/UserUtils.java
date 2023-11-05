@@ -4,9 +4,6 @@ import com.example.userservice.exception.CustomException;
 import com.example.userservice.model.User;
 import com.example.userservice.model.UserDto;
 import com.example.userservice.repository.UserRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -16,7 +13,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-import java.util.List;
 import java.util.Set;
 
 public class UserUtils {
@@ -64,33 +60,4 @@ public class UserUtils {
         logger.info("formed dao - {}", user.toString());
         return user;
     }
-/*
-    public static <T> String toJsonString(T object) {
-        String value;
-
-        try {
-            value = objectMapper.writeValueAsString(object);
-        } catch (JsonProcessingException jx) {
-            logger.error(jx.getMessage());
-            throw new CustomException("Invalid format", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        logger.info("converted json string - {}", value);
-        return value;
-    }
-
-    public static <T> List<T> fromJsonString(String jsonString, Class<T> clazz) {
-        List<T> value;
-
-        logger.info("received json string - {}", jsonString);
-
-        try {
-            value = objectMapper.readValue(jsonString, new TypeReference<>() {
-            });
-        } catch (JsonProcessingException jx) {
-            logger.error(jx.getMessage());
-            throw new CustomException("Invalid Format", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return value;
-    }*/
-
 }

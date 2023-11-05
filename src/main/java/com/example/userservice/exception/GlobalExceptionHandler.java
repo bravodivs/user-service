@@ -11,8 +11,6 @@ import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.HashMap;
 
 import static com.example.userservice.constants.UserConstants.ERROR_MESSAGE;
@@ -20,9 +18,8 @@ import static com.example.userservice.constants.UserConstants.STATUS;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
-
     private final HashMap<String, String> map = new HashMap<>();
+    Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(value = CustomException.class)
     public ResponseEntity<Object> customException(CustomException cx) {
@@ -31,8 +28,6 @@ public class GlobalExceptionHandler {
         map.put(ERROR_MESSAGE, cx.getMessage());
         map.put(STATUS, String.valueOf(cx.getStatus()));
         logger.error("Error encountered {} with message {}", cx.getStatus(), cx.getMessage());
-        /*TODO: remove this*/
-        cx.printStackTrace();
         return new ResponseEntity<>(map, cx.getStatus());
     }
 
@@ -44,7 +39,7 @@ public class GlobalExceptionHandler {
                 map.put(fieldError.getField(), fieldError.getDefaultMessage())
         );
         logger.error("Invalid argument(s) exception encountered - {}", mx.getMessage());
-        mx.printStackTrace();
+//        mx.printStackTrace();
         return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
     }
 
@@ -54,7 +49,6 @@ public class GlobalExceptionHandler {
 
         map.put(ERROR_MESSAGE, ix.getMessage());
         logger.error("Illegal argument(s) exception encountered - {}", ix.getLocalizedMessage());
-        ix.printStackTrace();
         return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
     }
 
@@ -64,7 +58,6 @@ public class GlobalExceptionHandler {
 
         map.put(ERROR_MESSAGE, ax.getMessage());
         logger.error("access denied exception occurred");
-        ax.printStackTrace();
         return new ResponseEntity<>(map, HttpStatus.FORBIDDEN);
     }
 
@@ -74,12 +67,11 @@ public class GlobalExceptionHandler {
 
         map.put(ERROR_MESSAGE, mx.getMessage());
         logger.error("Missing header");
-        mx.printStackTrace();
         return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = DataIntegrityViolationException.class)
-    public ResponseEntity<Object> sqlError(DataIntegrityViolationException dx){
+    public ResponseEntity<Object> sqlError(DataIntegrityViolationException dx) {
         map.clear();
 
         map.put(ERROR_MESSAGE, "Database error");
@@ -90,14 +82,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = Exception.class)
     public ResponseEntity<Object> otherFailures(Exception ex) {
         map.clear();
+/*
 
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
         ex.printStackTrace(pw);
+*/
 
         map.put(ERROR_MESSAGE, ex.getMessage());
         map.put(STATUS, HttpStatus.INTERNAL_SERVER_ERROR.toString());
-        map.put("Stack trace", sw.toString());
+
         return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

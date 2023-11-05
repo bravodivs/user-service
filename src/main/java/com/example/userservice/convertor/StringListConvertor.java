@@ -1,4 +1,4 @@
-package com.example.userservice.Convertor;
+package com.example.userservice.convertor;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;

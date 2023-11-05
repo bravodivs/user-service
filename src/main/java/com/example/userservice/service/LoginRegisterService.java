@@ -4,7 +4,7 @@ import com.example.userservice.exception.CustomException;
 import com.example.userservice.model.*;
 import com.example.userservice.repository.DeletedUserRepository;
 import com.example.userservice.repository.UserRepository;
-import com.example.userservice.util.JwtUtility;
+import com.example.userservice.jwt.JwtUtility;
 import com.example.userservice.util.UserUtils;
 import io.jsonwebtoken.Claims;
 import org.slf4j.Logger;
@@ -96,7 +96,6 @@ public class LoginRegisterService {
                 logger.error(e.getMessage());
                 throw new CustomException("Query error. Check logs", HttpStatus.INTERNAL_SERVER_ERROR);
             }
-//        else throw new CustomException("Invalid fields provided", HttpStatus.NOT_ACCEPTABLE);
 
         logger.info("User {} registered", user.getUsername());
         return UserUtils.userDaoToDto(user);
@@ -113,8 +112,7 @@ public class LoginRegisterService {
             logger.error("authentication exception with message {}", e.getMessage());
             throw new CustomException("Invalid credentials", HttpStatus.UNAUTHORIZED);
         } catch (Exception e) {
-            logger.error("error while authentication");
-            logger.error(Arrays.toString(e.getStackTrace()));
+            logger.error("error while authentication {}", e.getMessage());
             throw new CustomException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -141,15 +139,12 @@ public class LoginRegisterService {
         UserDto oldUser = UserUtils.userDaoToDto(findExistingUser(username));
         UserDto newUser = new UserDto();
 
-//        newUser.setUsername(Optional.ofNullable(updateRequest.getUsername()).orElse(oldUser.getUsername()));
-
         if (updateRequest.getUsername() == null) {
             newUser.setUsername(oldUser.getUsername());
         } else if (userRepository.existsByUsername(updateRequest.getUsername())) {
             throw new CustomException("Username already exists", HttpStatus.BAD_REQUEST);
         } else newUser.setUsername(updateRequest.getUsername());
 
-//        newUser.setMobileNumber(Optional.ofNullable(updateRequest.getMobileNumber()).orElse(oldUser.getMobileNumber()));
 
         if (updateRequest.getMobileNumber() == null) {
             newUser.setMobileNumber(oldUser.getMobileNumber());
@@ -157,14 +152,11 @@ public class LoginRegisterService {
             throw new CustomException("Mobile number already exists", HttpStatus.BAD_REQUEST);
         } else newUser.setMobileNumber(updateRequest.getMobileNumber());
 
-//        newUser.setEmail(Optional.ofNullable(updateRequest.getEmail()).orElse(oldUser.getEmail()));
         if (updateRequest.getEmail() == null) {
             newUser.setEmail(oldUser.getEmail());
         } else if (userRepository.existsByEmail(updateRequest.getEmail())) {
             throw new CustomException("Email already exists", HttpStatus.BAD_REQUEST);
         } else newUser.setEmail(updateRequest.getEmail());
-
-//        newUser.setAddress(Optional.ofNullable(updateRequest.getAddress()).orElse(oldUser.getAddress()));
 
         Address newAddress = new Address();
         if(updateRequest.getAddress()!=null) {
@@ -209,6 +201,7 @@ public class LoginRegisterService {
         logger.info("User {} updated", newUser.getUsername());
         return newUser;
     }
+
 /*
 
     @PreAuthorize("hasAuthority('ADMIN') or #username == authentication.name")
@@ -264,7 +257,7 @@ public class LoginRegisterService {
         try {
             userRepository.save(user);
         } catch (Exception e) {
-            logger.error(Arrays.toString(e.getStackTrace()));
+            logger.error(e.getMessage());
             throw new CustomException(e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new OkResponse(String.format("User %s disabled", username));
@@ -281,7 +274,7 @@ public class LoginRegisterService {
         try {
             userRepository.save(user);
         } catch (Exception e) {
-            logger.error(Arrays.toString(e.getStackTrace()));
+            logger.error(e.getMessage());
             throw new CustomException(e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new OkResponse(String.format("User %s account is enabled", username));
@@ -332,7 +325,6 @@ public class LoginRegisterService {
             return user;
 
         } catch (CustomException cx) {
-//            logger.error(Arrays.toString(cx.getStackTrace()));
             logger.error(cx.getMessage());
             throw new CustomException(cx.getMessage(), cx.getStatus());
 
@@ -375,14 +367,12 @@ public class LoginRegisterService {
 
     private Boolean validateUser(UserDto userDto) {
         if (Boolean.TRUE.equals(userRepository.existsByEmail(userDto.getEmail())))
-//            return Boolean.FALSE;
             throw new CustomException("Email already exists.", HttpStatus.BAD_REQUEST);
+
         if (Boolean.TRUE.equals(userRepository.existsByMobileNumber(userDto.getMobileNumber())))
-//            return Boolean.FALSE;
             throw new CustomException("Mobile number already exists.", HttpStatus.BAD_REQUEST);
 
         if (Boolean.TRUE.equals(userRepository.existsByUsername(userDto.getUsername())))
-//            return Boolean.FALSE;
             throw new CustomException("Username already exists.", HttpStatus.BAD_REQUEST);
 
         logger.info("user validated");

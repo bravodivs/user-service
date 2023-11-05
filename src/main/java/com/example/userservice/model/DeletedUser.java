@@ -1,6 +1,6 @@
 package com.example.userservice.model;
 
-import com.example.userservice.Convertor.StringListConvertor;
+import com.example.userservice.convertor.StringListConvertor;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -55,7 +55,6 @@ public class DeletedUser {
     @NotBlank(message = "User mobile number may not be empty")
     private String mobileNumber;
 
-    /* : fix this.*/
     @NotNull(message = "User address may not be empty")
     @NotBlank(message = "User address may not be empty")
     @Column(columnDefinition = "VARCHAR(255)")
